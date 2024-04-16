@@ -19,16 +19,18 @@ public class ResponseLogic {
     public String receive() {
         byte[] data = new byte[1024 * 1024];
         DatagramPacket packet = new DatagramPacket(data, data.length);
-        String request = null;
+        return getData(packet, data);
+    }
+
+    private String getData(DatagramPacket packet, byte[] data) {
         try {
             socket.receive(packet);
             data = packet.getData();
             data = ArrayUtils.toPrimitive(Arrays.stream(ArrayUtils.toObject(data)).filter(el -> el != 0).toArray(Byte[]::new));
-            request = new String(data);
+            return new String(data);
         } catch (IOException e) {
             ConsoleWriter.getInstance().alert("Ошибка при получении данных с сервера.");
-            Program.getInstance().stop();
+            return null;
         }
-        return request;
     }
 }
